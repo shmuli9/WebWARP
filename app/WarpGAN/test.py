@@ -5,7 +5,7 @@ from scipy import misc
 import scipy.io as sio
 from warpgan import WarpGAN
 
-# Parse aguements
+# Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("model_dir", help="The path to the pretrained model",
                         type=str)
