@@ -1,20 +1,15 @@
 from flask import Flask
-# from flask_migrate import Migrate
-# from flask_sqlalchemy import SQLAlchemy
-import os
 
+from app.WarpGAN.warpgan import WarpGAN
 from app.config import Config
 
-# db = SQLAlchemy()
-# migrate = Migrate()
-
+network = WarpGAN()
 
 def create_app(config_object=Config):
     app = Flask(__name__, static_folder='../frontend/build', static_url_path="/")
     app.config.from_object(config_object)
 
-    # db.init_app(app)
-    # migrate.init_app(app, db, config_object.MIGRATIONS_DIR)
+    network.load_model(Config.MODEL_DIRECTORY)
 
     @app.errorhandler(404)
     def not_found(e):

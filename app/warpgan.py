@@ -4,9 +4,7 @@ import numpy as np
 from scipy import misc
 
 from app.WarpGAN.align.detect_align import detect_align
-from app.WarpGAN.warpgan import WarpGAN
-
-model_dir = "app/WarpGAN/pretrained/warpgan_pretrained"  # potentially move to config file
+from app import network
 
 
 def trigger_nn(input_path, output_path, num_styles=5, scale=1.0, aligned=False):
@@ -19,9 +17,6 @@ def trigger_nn(input_path, output_path, num_styles=5, scale=1.0, aligned=False):
     :param aligned: Set true if the input face is already normalized
     :return:
     """
-
-    network = WarpGAN()
-    network.load_model(model_dir)
 
     img = misc.imread(input_path, mode='RGB')
 
