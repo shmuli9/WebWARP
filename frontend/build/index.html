@@ -5,6 +5,11 @@
     <title>Index</title>
 </head>
 <body>
-
+<form action="/upload" method="post" enctype=multipart/form-data>
+    <input type=file name=file>
+    <input type=number name=num_styles placeholder="Styles">
+    <input type=number name="scale" placeholder="Scale factor">
+    <input type=submit value=Upload>
+</form>
 </body>
 </html>

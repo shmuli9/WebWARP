@@ -1,6 +1,7 @@
 from flask import Flask
 # from flask_migrate import Migrate
 # from flask_sqlalchemy import SQLAlchemy
+import os
 
 from app.config import Config
 
@@ -9,7 +10,7 @@ from app.config import Config
 
 
 def create_app(config_object=Config):
-    app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
+    app = Flask(__name__, static_folder='../frontend/build', static_url_path="/")
     app.config.from_object(config_object)
 
     # db.init_app(app)
