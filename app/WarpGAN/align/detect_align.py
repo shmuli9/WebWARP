@@ -34,8 +34,8 @@ import argparse
 import random
 import cv2
 
-from align.mtcnntf.detector import Detector
-from align.matlab_cp2tform import get_similarity_transform_for_cv2
+from app.WarpGAN.align.mtcnntf.detector import Detector
+from app.WarpGAN.align.matlab_cp2tform import get_similarity_transform_for_cv2
 
 
 def align(src_img, src_pts, ref_pts, image_size, scale=1.0, transpose_input=False):
