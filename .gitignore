@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Environments
+venv
+
+
+# mypy
+.mypy_cache/
+legacy/
+log/
+
+.idea
+
+# WarpGAN
+app/WarpGAN/result/*
+app/WarpGAN/data
+app/WarpGAN/pretrained
