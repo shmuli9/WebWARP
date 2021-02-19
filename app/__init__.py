@@ -1,15 +1,14 @@
 from flask import Flask
 
-from app.WarpGAN.warpgan import WarpGAN
 from app.config import Config
+from app.init_app import model_init_app
 
-network = WarpGAN()
+network = model_init_app()
+
 
 def create_app(config_object=Config):
     app = Flask(__name__, static_folder='../frontend/build', static_url_path="/")
     app.config.from_object(config_object)
-
-    network.load_model(Config.MODEL_DIRECTORY)
 
     @app.errorhandler(404)
     def not_found(e):

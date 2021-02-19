@@ -1,6 +1,21 @@
 ### WebWARP
 ##### A web interface for WarpGAN
 
+### Development
+
+I ran into an SSL issue when downloading the pretrained model programmatically. To fix, I made the following edit: 
+
+##### Original
+###### File: `venv/Lib/site-packages/gdown/download.py:110`
+
+    res = sess.get(url, stream=True)
+
+##### Changed to
+###### File: `venv/Lib/site-packages/gdown/download.py:110`
+    res = sess.get(url, stream=True, verify=False)
+
+This was a local issue and should work fine once deployed, so no need to worry about editing the venv for deployment.
+
 ### Testing
 
 Run the test code in the following format:
