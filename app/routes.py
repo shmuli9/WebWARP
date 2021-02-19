@@ -15,6 +15,31 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in Config.ALLOWED_EXTENSIONS
 
+@bp.route("/status", methods=["GET", "POST"])
+def system_status():
+    """
+    Return system status
+
+    :return:
+    """
+    model_dir = Config.MODEL_DIRECTORY
+    model_dir_exists = os.path.exists(model_dir)
+    model_dir_contents = os.listdir(model_dir) if model_dir_exists else []
+
+    parent_dir = os.path.dirname(model_dir)
+    parent_dir_exists = os.path.exists(parent_dir)
+    parent_dir_contents = os.listdir(parent_dir) if parent_dir_exists else []
+
+    data = {
+        "configured_model_dir": model_dir,
+        "parent_dir_exists": parent_dir_exists,
+        "parent_dir_contents": parent_dir_contents,
+        "model_dir_exists": model_dir_exists,
+        "model_dir_contents": model_dir_contents,
+    }
+
+    return data
+
 
 @bp.route("/upload", methods=["POST"])
 def upload_image():
