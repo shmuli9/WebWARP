@@ -3,6 +3,16 @@
 
 ### Development
 
+Python requirements are provided in the requirements.txt file. 
+Install with the following commands:
+
+    python -m venv venv
+    .\venv\Scripts\activate
+    pip install --upgrade pip
+    pip install -r requirements.txt
+
+Please note this project requires Python 3.6 (I think due to the TensorFlow 1.9 dependency)
+
 I ran into an SSL issue when downloading the pretrained model programmatically. To fix, I made the following edit: 
 
 ##### Original
