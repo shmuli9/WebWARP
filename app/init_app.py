@@ -35,3 +35,12 @@ def model_init_app(reset=False):
     network.load_model(model_path)
 
     return network
+
+
+def directories_init_app():
+    directories = [Config.UPLOAD_FOLDER, Config.RESULTS_FOLDER]
+
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+

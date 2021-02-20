@@ -7,11 +7,11 @@ from werkzeug.utils import secure_filename
 from app.utils import exec_command, allowed_file
 from app.init_app import model_init_app
 
-bp = Blueprint("routes", __name__)
+api = Blueprint("api_routes", __name__, url_prefix="/api")
 
 
-@bp.route("/status/", methods=["GET", "POST"])
-@bp.route("/status/<command>", methods=["GET", "POST"])
+@api.route("/status/", methods=["GET", "POST"])
+@api.route("/status/<command>", methods=["GET", "POST"])
 def system_status(command=None):
     """
     Return system status
@@ -40,7 +40,7 @@ def system_status(command=None):
     return data
 
 
-@bp.route("/upload", methods=["POST"])
+@api.route("/upload", methods=["POST"])
 def upload_image():
     """
     POST params:
