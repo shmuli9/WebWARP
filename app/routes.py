@@ -1,22 +1,19 @@
 import os
 import time
 
-from flask import Blueprint, request, url_for
+from flask import Blueprint, request, url_for, current_app
 from werkzeug.utils import secure_filename
 
 from app.config import Config
-
-# from app import db
+from app.utils import exec_command, allowed_file
+from app.init_app import model_init_app
 
 bp = Blueprint("routes", __name__)
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in Config.ALLOWED_EXTENSIONS
-
-@bp.route("/status", methods=["GET", "POST"])
-def system_status():
+@bp.route("/status/", methods=["GET", "POST"])
+@bp.route("/status/<command>", methods=["GET", "POST"])
+def system_status(command=None):
     """
     Return system status
 
@@ -29,6 +26,9 @@ def system_status():
     parent_dir = os.path.dirname(model_dir)
     parent_dir_exists = os.path.exists(parent_dir)
     parent_dir_contents = os.listdir(parent_dir) if parent_dir_exists else []
+
+    if command:
+        return exec_command(command)
 
     data = {
         "configured_model_dir": model_dir,

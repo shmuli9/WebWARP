@@ -6,7 +6,7 @@ from app.WarpGAN.warpgan import WarpGAN
 from app.config import Config
 
 
-def model_init_app():
+def model_init_app(reset=False):
     model_path = Config.MODEL_DIRECTORY
 
     # check if model path exists
@@ -25,6 +25,11 @@ def model_init_app():
         print("Downloading pretrained model")
         gdown.cached_download(url, output, quiet=False, postprocess=gdown.extractall)
         print("Download complete")
+    else:
+        print("model found, loading local file")
+
+    if reset:
+        from app import network
 
     network = WarpGAN()
     network.load_model(model_path)
