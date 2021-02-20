@@ -22,10 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import sys
 import imp
-import time
+import os
 from functools import partial
 
 import numpy as np
@@ -37,9 +35,9 @@ class WarpGAN:
         self.graph = tf.Graph()
         gpu_options = tf.GPUOptions(allow_growth=True)
         tf_config = tf.ConfigProto(gpu_options=gpu_options,
-                allow_soft_placement=True, log_device_placement=False)
+                                   allow_soft_placement=True, log_device_placement=False)
         self.sess = tf.Session(graph=self.graph, config=tf_config)
-            
+
     def initialize(self, config, num_classes=None):
         '''
             Initialize the graph from scratch according to config.
@@ -77,11 +75,10 @@ class WarpGAN:
                 self.ldmark_pred = tf.identity(ldmark_pred, name='ldmark_pred')
                 self.ldmark_diff = tf.identity(ldmark_diff, name='ldmark_diff')
 
-
                 # Build discriminator for real images
                 patch_logits_A, logits_A = self.discriminator(self.images_A)
                 patch_logits_B, logits_B = self.discriminator(self.images_B)
-                patch_logits_BA, logits_BA = self.discriminator(deform_BA)                          
+                patch_logits_BA, logits_BA = self.discriminator(deform_BA)
 
                 # Show images in TensorBoard
                 image_grid_A = tf.stack([self.images_A, render_AA], axis=1)[:1]
@@ -89,19 +86,18 @@ class WarpGAN:
                 image_grid_BA = tf.stack([self.images_B, deform_BA], axis=1)[:1]
                 image_grid = tf.concat([image_grid_A, image_grid_B, image_grid_BA], axis=0)
                 image_grid = tf.reshape(image_grid, [-1] + list(self.images_A.shape[1:]))
-                image_grid = self.image_grid(image_grid, (3,2))
+                image_grid = self.image_grid(image_grid, (3, 2))
                 tf.summary.image('image_grid', image_grid)
-
 
                 # Build all losses
                 self.watch_list = {}
-                loss_list_G  = []
-                loss_list_D  = []
-               
+                loss_list_G = []
+                loss_list_D = []
+
                 # Advesarial loss for deform_BA
                 loss_D, loss_G = self.cls_adv_loss(logits_A, logits_B, logits_BA,
-                    self.labels_A, self.labels_B, self.labels_B, num_classes)
-                loss_D, loss_G = config.coef_adv*loss_D, config.coef_adv*loss_G
+                                                   self.labels_A, self.labels_B, self.labels_B, num_classes)
+                loss_D, loss_G = config.coef_adv * loss_D, config.coef_adv * loss_G
 
                 self.watch_list['LDg'] = loss_D
                 self.watch_list['LGg'] = loss_G
@@ -110,7 +106,7 @@ class WarpGAN:
 
                 # Patch Advesarial loss for deform_BA
                 loss_D, loss_G = self.patch_adv_loss(patch_logits_A, patch_logits_B, patch_logits_BA)
-                loss_D, loss_G = config.coef_patch_adv*loss_D, config.coef_patch_adv*loss_G
+                loss_D, loss_G = config.coef_patch_adv * loss_D, config.coef_patch_adv * loss_G
 
                 self.watch_list['LDp'] = loss_D
                 self.watch_list['LGp'] = loss_G
@@ -126,15 +122,13 @@ class WarpGAN:
 
                 self.watch_list['idtA'] = loss_idt_A
                 self.watch_list['idtB'] = loss_idt_B
-                loss_list_G.append(loss_idt_A+loss_idt_B)
-
+                loss_list_G.append(loss_idt_A + loss_idt_B)
 
                 # Collect all losses
                 reg_loss = tf.reduce_sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES), name='reg_loss')
                 self.watch_list['reg_loss'] = reg_loss
                 loss_list_G.append(reg_loss)
                 loss_list_D.append(reg_loss)
-
 
                 loss_G = tf.add_n(loss_list_G, name='loss_G')
                 grads_G = tf.gradients(loss_G, self.G_vars)
@@ -157,7 +151,7 @@ class WarpGAN:
                 self.train_op = tf.group(*train_ops)
 
                 # Collect TF summary
-                for k,v in self.watch_list.items():
+                for k, v in self.watch_list.items():
                     tf.summary.scalar('losses/' + k, v)
                 tf.summary.scalar('learning_rate', self.learning_rate)
                 self.summary_op = tf.summary.merge_all()
@@ -166,31 +160,29 @@ class WarpGAN:
                 self.sess.run(tf.local_variables_initializer())
                 self.sess.run(tf.global_variables_initializer())
                 self.saver = tf.train.Saver(tf.trainable_variables(), max_to_keep=99)
- 
-               
 
     def setup_network_model(self, config, num_classes):
         network_models = imp.load_source('network_models', config.network)
-        self.encoder = partial(network_models.encoder, 
-            style_size = config.style_size,
-            keep_prob = self.keep_prob,
-            phase_train = self.phase_train,
-            weight_decay = config.weight_decay, 
-            reuse=tf.AUTO_REUSE, scope = 'Encoder')
-        self.decoder = partial(network_models.decoder, 
-            style_size = config.style_size,
-            image_size = config.image_size,
-            keep_prob = self.keep_prob,
-            phase_train = self.phase_train,
-            weight_decay = config.weight_decay, 
-            reuse=tf.AUTO_REUSE, scope = 'Decoder')
+        self.encoder = partial(network_models.encoder,
+                               style_size=config.style_size,
+                               keep_prob=self.keep_prob,
+                               phase_train=self.phase_train,
+                               weight_decay=config.weight_decay,
+                               reuse=tf.AUTO_REUSE, scope='Encoder')
+        self.decoder = partial(network_models.decoder,
+                               style_size=config.style_size,
+                               image_size=config.image_size,
+                               keep_prob=self.keep_prob,
+                               phase_train=self.phase_train,
+                               weight_decay=config.weight_decay,
+                               reuse=tf.AUTO_REUSE, scope='Decoder')
         self.discriminator = partial(network_models.discriminator,
-            num_classes = 3*num_classes,
-            bottleneck_size = config.bottleneck_size,
-            keep_prob = self.keep_prob,
-            phase_train = self.phase_train,
-            weight_decay = config.weight_decay, 
-            reuse=tf.AUTO_REUSE, scope = 'Discriminator')
+                                     num_classes=3 * num_classes,
+                                     bottleneck_size=config.bottleneck_size,
+                                     keep_prob=self.keep_prob,
+                                     phase_train=self.phase_train,
+                                     weight_decay=config.weight_decay,
+                                     reuse=tf.AUTO_REUSE, scope='Discriminator')
 
         return
 
@@ -199,7 +191,7 @@ class WarpGAN:
         vars_encoder = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='Encoder')
         vars_decoder = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='Decoder')
         return vars_encoder + vars_decoder
-        
+
     @property
     def D_vars(self):
         return tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='Discriminator')
@@ -210,44 +202,43 @@ class WarpGAN:
             labels_D_B = tf.ones(tf.shape(logits_B)[0:1], dtype=tf.int32)
             labels_D_BA = tf.ones(tf.shape(logits_BA)[0:1], dtype=tf.int32) * 2
             labels_G_BA = tf.zeros(tf.shape(logits_BA)[0:1], dtype=tf.int32)
-            loss_D_A = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
+            loss_D_A = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
                 logits=logits_A, labels=labels_D_A))
-            loss_D_B = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
+            loss_D_B = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
                 logits=logits_B, labels=labels_D_B))
-            loss_D_BA = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
+            loss_D_BA = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
                 logits=logits_BA, labels=labels_D_BA))
-            loss_G = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
+            loss_G = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
                 logits=logits_BA, labels=labels_G_BA))
             loss_D = loss_D_A + loss_D_B + loss_D_BA
 
             return loss_D, loss_G
-            
+
     def cls_adv_loss(self, logits_A, logits_B, logits_BA, labels_A, labels_B, labels_BA, num_classes):
         with tf.name_scope('ClsAdvLoss'):
-            loss_D_A = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
+            loss_D_A = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
                 logits=logits_A, labels=labels_A))
-            loss_D_B = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
-                logits=logits_B, labels=labels_B+num_classes))
-            loss_D_BA = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
-                logits=logits_BA, labels=labels_BA+2*num_classes))
+            loss_D_B = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
+                logits=logits_B, labels=labels_B + num_classes))
+            loss_D_BA = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
+                logits=logits_BA, labels=labels_BA + 2 * num_classes))
 
             loss_D = loss_D_A + loss_D_B + loss_D_BA
 
-            loss_G_BA = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(\
+            loss_G_BA = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits( \
                 logits=logits_BA, labels=labels_BA))
 
             loss_G = loss_G_BA
 
         return loss_D, loss_G
-        
-                
+
     def image_grid(self, images, size):
         m, n = size
         h, w, c = images.shape[1:4]
         h, w, c = h.value, w.value, c.value
         images = tf.reshape(images, [m, n, h, w, c])
         images = tf.transpose(images, [0, 2, 1, 3, 4])
-        image_grid = tf.reshape(images, [1, m*h, n*w, c])
+        image_grid = tf.reshape(images, [1, m * h, n * w, c])
         return image_grid
 
     def save_model(self, model_dir, global_step):
@@ -282,7 +273,7 @@ class WarpGAN:
             assert len(meta_files) == 1
             meta_file = os.path.join(model_path, meta_files[0])
             ckpt_file = tf.train.latest_checkpoint(model_path)
-            
+
             print('Metagraph file: %s' % meta_file)
             print('Checkpoint file: %s' % ckpt_file)
             saver = tf.train.import_meta_graph(meta_file, clear_devices=True, import_scope=scope)
@@ -303,8 +294,6 @@ class WarpGAN:
             self.input_style = self.graph.get_tensor_by_name('Decoder/StyleController/input_style:0')
             self.warp_input = self.graph.get_tensor_by_name('Decoder/WarpController/warp_input:0')
 
-
-
     def train(self, images_batch, labels_batch, switch_batch, learning_rate, keep_prob):
         images_A = images_batch[~switch_batch]
         images_B = images_batch[switch_batch]
@@ -312,16 +301,16 @@ class WarpGAN:
         labels_B = labels_batch[switch_batch]
         scales_A = np.ones((images_A.shape[0]))
         scales_B = np.ones((images_B.shape[0]))
-        feed_dict = {   self.images_A: images_A,
-                        self.images_B: images_B,
-                        self.labels_A: labels_A,
-                        self.labels_B: labels_B,
-                        self.scales_A: scales_A,
-                        self.scales_B: scales_B,
-                        self.learning_rate: learning_rate,
-                        self.keep_prob: keep_prob,
-                        self.phase_train: True,}
-        _, wl, sm = self.sess.run([self.train_op, self.watch_list, self.summary_op], feed_dict = feed_dict)
+        feed_dict = {self.images_A: images_A,
+                     self.images_B: images_B,
+                     self.labels_A: labels_A,
+                     self.labels_B: labels_B,
+                     self.scales_A: scales_A,
+                     self.scales_B: scales_B,
+                     self.learning_rate: learning_rate,
+                     self.keep_prob: keep_prob,
+                     self.phase_train: True, }
+        _, wl, sm = self.sess.run([self.train_op, self.watch_list, self.summary_op], feed_dict=feed_dict)
 
         step = self.sess.run(self.global_step)
 
@@ -331,23 +320,23 @@ class WarpGAN:
         num_images = images.shape[0]
         h, w, c = tuple(self.deform_BA.shape[1:])
         result = np.ndarray((num_images, h, w, c), dtype=np.float32)
-        #ldmark_pred = np.ndarray((num_images, self.ldmark_pred.shape[1].value), dtype=np.float32)
-        #ldmark_diff = np.ndarray((num_images, self.ldmark_pred.shape[1].value), dtype=np.float32)
+        # ldmark_pred = np.ndarray((num_images, self.ldmark_pred.shape[1].value), dtype=np.float32)
+        # ldmark_diff = np.ndarray((num_images, self.ldmark_pred.shape[1].value), dtype=np.float32)
         for start_idx in range(0, num_images, batch_size):
             end_idx = min(num_images, start_idx + batch_size)
             indices = slice(start_idx, end_idx)
             images_B = images[indices]
             scales_B = scales[indices]
-            feed_dict = {   self.images_B: images_B,          
-                            self.scales_B: scales_B,
-                            self.phase_train: False,
-                            self.keep_prob: 1.0}
+            feed_dict = {self.images_B: images_B,
+                         self.scales_B: scales_B,
+                         self.phase_train: False,
+                         self.keep_prob: 1.0}
             if styles is not None:
                 feed_dict[self.input_style] = styles[indices]
 
             if visualization:
                 result[indices], ldmark_pred[indices], ldmark_diff[indices] = \
-                     self.sess.run([self.deform_BA, self.ldmark_pred, self.ldmark_diff], feed_dict=feed_dict)
+                    self.sess.run([self.deform_BA, self.ldmark_pred, self.ldmark_diff], feed_dict=feed_dict)
             else:
                 result[indices] = self.sess.run(self.deform_BA, feed_dict=feed_dict)
 
@@ -356,8 +345,7 @@ class WarpGAN:
         else:
             return result
 
-
-    def get_styles(self, images, batch_size):    
+    def get_styles(self, images, batch_size):
         num_images = images.shape[0]
         h, w, c = tuple(self.deform_BA.shape[1:])
         styles = np.ndarray((num_images, self.input_style.shape[1].value), dtype=np.float32)
@@ -365,11 +353,9 @@ class WarpGAN:
             end_idx = min(num_images, start_idx + batch_size)
             indices = slice(start_idx, end_idx)
             images_B = images[indices]
-            feed_dict = {self.images_B: images_B,           
-                        self.phase_train: False,
-                        self.keep_prob: 1.0}
+            feed_dict = {self.images_B: images_B,
+                         self.phase_train: False,
+                         self.keep_prob: 1.0}
             styles[indices] = self.sess.run(self.styles_B, feed_dict=feed_dict)
 
         return styles
-
-
