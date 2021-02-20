@@ -3,7 +3,7 @@ import os
 import gdown
 
 from app.WarpGAN.warpgan import WarpGAN
-from app.config import Config
+from app.config import Config  # must use direct import because this file is imported before Flask context is created
 
 
 def model_init_app(reset=False):
