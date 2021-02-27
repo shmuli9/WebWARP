@@ -1,7 +1,7 @@
 import os
 import time
 
-from flask import Blueprint, request, url_for, current_app
+from flask import Blueprint, request, url_for, current_app, redirect
 from werkzeug.utils import secure_filename
 
 from app.utils import exec_command, allowed_file
@@ -73,15 +73,17 @@ def upload_image():
 
             from app import warpgan
             start = time.time()
-            images = warpgan.trigger_nn(upload_path, current_app.config["RESULTS_FOLDER"], num_styles, scale)
+            images = warpgan.trigger_nn(upload_path, current_app.config["RESULTS_FOLDER"], num_styles, scale, True)
             total = time.time() - start
 
             image_urls = [url_for("static", filename=f"results/{image}") for image in images]
 
-            os.remove(upload_path)
+            # os.remove(upload_path)
 
             return {
                 "num_styles": num_styles,
                 "time_taken": total,
                 "image": image_urls
             }
+
+        return {"msg": "error"}

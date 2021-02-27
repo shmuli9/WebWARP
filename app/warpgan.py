@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 from scipy import misc
+import time
 
 from app.WarpGAN.align.detect_align import detect_align
 from app import network
@@ -36,7 +37,7 @@ def trigger_nn(input_path, output_path, num_styles=5, scale=1.0, aligned=False):
 
     outputs = []
     for i in range(num_styles):
-        image_name = f"{out_name}_{i}.jpg"
+        image_name = f"{out_name}_{i}_{time.time()}.jpg"
         outputs.append(image_name)
 
         full_out_path = f"{output_path}/{image_name}"
