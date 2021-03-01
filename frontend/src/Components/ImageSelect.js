@@ -3,10 +3,10 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
 export const Demo: React.FC = () => {
-    const [image, setImage] = useState("");
+    const [image, setImage] = useState("/image_placeholder.png");
     const [filename, setFilename] = useState();
     const [generated, setGenerated] = useState();
-    const [cropData, setCropData] = useState("");
+    // const [cropData, setCropData] = useState("");
     const [cropper, setCropper] = useState();
     const onChange = (e: any) => {
         e.preventDefault();
@@ -24,11 +24,11 @@ export const Demo: React.FC = () => {
         setFilename(files[0].name)
     };
 
-    const getCropData = () => {
-        if (typeof cropper !== "undefined") {
-            setCropData(cropper.getCroppedCanvas({width: 1024, height: 1024}).toDataURL());
-        }
-    };
+    // const getCropData = () => {
+    //     if (typeof cropper !== "undefined") {
+    //         setCropData(cropper.getCroppedCanvas({width: 1024, height: 1024}).toDataURL());
+    //     }
+    // };
 
     const getMorphed = () => {
         cropper.getCroppedCanvas({width: 256, height: 256}).toBlob((b) => {
@@ -47,15 +47,16 @@ export const Demo: React.FC = () => {
     return (
         <div className={"row"}>
             <div className={"col-6 mr-0"}>
-                <input type="file" onChange={onChange}/>
+                {/*<input type="file" onChange={onChange}/>*/}
+                <input accept="image/*" id="icon-button-file" type="file" capture="user" onChange={onChange}/>
                 <Cropper
-                    style={{height: 800, width: "100%"}}
+                    style={{height: 512, width: "100%"}}
                     src={image}
                     autoCrop={true}
                     aspectRatio={1}
                     viewMode={0}
-                    minCropBoxHeight={128}
-                    minCropBoxWidth={128}
+                    minCropBoxHeight={256}
+                    minCropBoxWidth={256}
                     cropBoxResizable={false}
                     background={true}
                     responsive={true}
@@ -67,18 +68,15 @@ export const Demo: React.FC = () => {
                 />
             </div>
             <div className={"col-6"}>
-                <div className="box" style={{width: "50%", float: "right", height: "300px"}}>
+                <div className="box" style={{width: "50%", height: "300px"}}>
                     <h1>
-                        <span>Crop</span>
-                        <button style={{float: "right"}} onClick={getCropData}>
-                            Crop Image
-                        </button>
-                        {cropData && <button onClick={getMorphed}>
+                        {image && <button onClick={getMorphed}>
                             Generate
                         </button>}
                     </h1>
-                    <img style={{width: "100%"}} src={cropData} alt="cropped"/>
-                    {generated && <img style={{width: "100%"}} src={generated} alt="generate"/>}
+                    <div>
+                        {generated && <img style={{width: 512}} src={generated} alt="generate"/>}
+                    </div>
                 </div>
             </div>
             <br style={{clear: "both"}}/>
