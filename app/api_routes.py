@@ -53,13 +53,13 @@ def upload_image():
 
     if request.method == "POST":
         if 'file' not in request.files:
-            print('No file part')
+            current_app.logger.debug('Error in Upload - No file part')
             return redirect(request.url)
 
         file = request.files['file']
 
         if file.filename == '':
-            print('No selected file')
+            current_app.logger.debug('Error in Upload - No selected file')
             return redirect(request.url)
 
         if file and allowed_file(file.filename):

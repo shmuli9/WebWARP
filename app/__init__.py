@@ -1,14 +1,33 @@
+import os
+
 from flask import Flask
+import logging
+from logging.handlers import RotatingFileHandler
 
 from app.config import Config
 from app.init_app import model_init_app, directories_init_app
 
-network = model_init_app()
+network = None
 directories_init_app()
+
 
 def create_app(config_object=Config):
     app = Flask(__name__, static_folder='../frontend/build', static_url_path="/")
     app.config.from_object(config_object)
+
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+    file_handler = RotatingFileHandler('logs/webwarp.log', maxBytes=20480, backupCount=30)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
+    file_handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(file_handler)
+    app.logger.setLevel(logging.DEBUG)
+
+    app.logger.info("WebWARP started")
+
+    with app.app_context():
+        global network
+        network = model_init_app()
 
     @app.errorhandler(404)
     def not_found(e):

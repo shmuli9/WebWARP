@@ -21,6 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from flask import current_app
 
 import imp
 import os
@@ -274,8 +275,8 @@ class WarpGAN:
             meta_file = os.path.join(model_path, meta_files[0])
             ckpt_file = tf.train.latest_checkpoint(model_path)
 
-            print('Metagraph file: %s' % meta_file)
-            print('Checkpoint file: %s' % ckpt_file)
+            current_app.logger.info('Metagraph file: %s' % meta_file)
+            current_app.logger.info('Checkpoint file: %s' % ckpt_file)
             saver = tf.train.import_meta_graph(meta_file, clear_devices=True, import_scope=scope)
             saver.restore(self.sess, ckpt_file)
 

@@ -25,3 +25,5 @@ app/WarpGAN/pretrained
 
 frontend/build/results
 frontend/build/uploads
+
+logs
