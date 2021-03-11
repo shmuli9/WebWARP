@@ -7,7 +7,6 @@ import LoadingScreen from "./Components/Loading";
 import 'simplebar/dist/simplebar.min.css';
 import SimpleBars from "simplebar-react";
 import Main from "./Components/Main/Main";
-import ImageSelect from "./Components/ImageSelect";
 
 function App() {
     const containerStyles = {
@@ -30,8 +29,7 @@ function App() {
                                 <About/>
                             </Route>
                             <Route exact path={"/"}>
-                                {/*<Main/>*/}
-                                <ImageSelect/>
+                                <Main/>
                             </Route>
                         </Switch>
                     </Container>
@@ -41,8 +39,7 @@ function App() {
 
             </SimpleBars>
         </Router>
-    )
-        ;
+    );
 }
 
 export default App;
