@@ -5,7 +5,7 @@ const Morphed = (props) => {
     const {generated} = props;
 
     return <div>
-        {generated && <Image style={{width: 512}} src={generated} alt="generate"></Image>}
+        {generated && <Image style={{width: "100%", height: "512px"}} src={generated} alt="generated"></Image>}
     </div>
 }
 export default Morphed;

@@ -49,7 +49,7 @@ const UploadForm = (props) => {
     };
 
     return <>
-        <Col>
+        <Col className={"my-auto"} md={6}>
             <Form>
                 <Form.File
                     id="source-file"
