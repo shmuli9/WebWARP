@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
-export const Demo: React.FC = (props) => {
-    const {setCropper, image} = props
+const CropImage = (props) => {
+    const {setCropper, image, enabled} = props
 
     return (
         <div className={"row"}>
@@ -12,6 +12,7 @@ export const Demo: React.FC = (props) => {
                     style={{height: 512, width: "100%"}}
                     src={image}
                     autoCrop={true}
+                    enable={enabled}
                     aspectRatio={1}
                     viewMode={0}
                     minCropBoxHeight={256}
@@ -31,4 +32,4 @@ export const Demo: React.FC = (props) => {
     );
 };
 
-export default Demo;
+export default CropImage;

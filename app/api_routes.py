@@ -70,10 +70,11 @@ def upload_image():
             # trigger neural net
             num_styles = request.form.get("num_styles", default=1, type=int)
             scale = request.form.get("scale", default=1.0, type=float)
+            aligned = True if request.form.get("aligned", default="false", type=str) == "true" else False
 
             from app import warpgan
             start = time.time()
-            images = warpgan.trigger_nn(upload_path, current_app.config["RESULTS_FOLDER"], num_styles, scale, True)
+            images = warpgan.trigger_nn(upload_path, current_app.config["RESULTS_FOLDER"], num_styles, scale, aligned)
             total = time.time() - start
 
             image_urls = [url_for("static", filename=f"results/{image}") for image in images]

@@ -5,19 +5,54 @@ import Button from "react-bootstrap/Button";
 import bsCustomFileInput from 'bs-custom-file-input';
 
 const UploadForm = (props) => {
-    const {setFilename, filename, setGenerated, cropper, setImage, image} = props;
+    const {setFilename, filename, setGenerated, cropper, setImage, image, setAligned, aligned, setEnabled} = props;
     const [scale, setScale] = useState(1.0);
     const [numStyles, setNumStyles] = useState(1);
-    const [aligned, setAligned] = useState(true);
+    const imageLoaded = image && image.search("placeholder") === -1
 
     useEffect(() => {
         bsCustomFileInput.init()
     })
 
+    useEffect(() => {
+        if (cropper === undefined) {
+            console.log("Cropper not initialised")
+        } else {
+            if (aligned && imageLoaded) {
+                cropper.enable()
+                console.log("Enabled...")
+                cropper.crop()
+                setEnabled(true)
+            } else {
+                cropper.clear()
+                cropper.disable()
+                console.log("Disabled...")
+                setEnabled(false)
+            }
+        }
+    }, [image, aligned, cropper, imageLoaded, setEnabled])
+
     const getMorphed = () => {
-        cropper.getCroppedCanvas({width: 256, height: 256}).toBlob((b) => {
+        const cropOptions = {
+            width: 256,
+            height: 256
+        }
+
+        if (aligned) {
+            cropper.getCroppedCanvas(cropOptions).toBlob((croppedImage) => {
+                upload(croppedImage);
+            })
+        } else {
+            fetch(image)
+                .then(res => res.blob())
+                .then((imageBlob) => {
+                    upload(imageBlob)
+                })
+        }
+
+        const upload = (imageToUpload) => {
             const form = new FormData();
-            form.append("file", b, filename);
+            form.append("file", imageToUpload, filename);
             form.append("scale", scale);
             form.append("num_styles", numStyles);
             form.append("aligned", aligned);
@@ -29,10 +64,10 @@ const UploadForm = (props) => {
                 .then(res => res.json())
                 .then(json => setGenerated(json.image[0]))
                 .catch(err => console.log(err));
-        })
+        }
     };
 
-    const chooseFile = (e: any) => {
+    const chooseFile = (e) => {
         e.preventDefault();
         let files;
         if (e.dataTransfer) {
@@ -59,25 +94,40 @@ const UploadForm = (props) => {
                     onChange={chooseFile}
                     custom
                 />
+                <Form.Check type="checkbox"
+                            id={"check-aligned"}
+                            checked={aligned}
+                            onChange={(e) => {
+                                setAligned(e.target.checked);
+                                cropper.reset();
+                            }}
+                            className={"mt-3"}
+                            label="Customise image?"/>
 
-                <Form.Group controlId="styles">
-                    <Form.Label>Number of styles ({numStyles})</Form.Label>
-                    <Form.Control type="range" value={numStyles} onChange={(e) => setNumStyles(e.target.value)}
-                                  min={1} max={5}/>
-                </Form.Group>
-                <Form.Group controlId="scale">
-                    <Form.Label>Scale factor ({scale})</Form.Label>
-                    <Form.Control type="range" value={scale} onChange={(e) => setScale(e.target.value)}
-                                  step={0.10}
-                                  min={0.50}
-                                  max={10.00}/>
-                </Form.Group>
             </Form>
         </Col>
-        <Col>
-            {image && image.search("placeholder") === -1 && <Button onClick={getMorphed}>
+        <Col className={imageLoaded ? "visible" : "invisible"}>
+            <Form.Group controlId="styles">
+                <Form.Label>Number of styles ({numStyles})</Form.Label>
+                <Form.Control type="range"
+                              value={numStyles}
+                              onChange={(e) => setNumStyles(e.target.value)}
+                              min={1}
+                              max={5}/>
+            </Form.Group>
+            <Form.Group controlId="scale">
+                <Form.Label>Scale factor ({scale})</Form.Label>
+                <Form.Control type="range"
+                              value={scale}
+                              onChange={(e) => setScale(e.target.value)}
+                              step={0.10}
+                              min={0.50}
+                              max={10.00}/>
+            </Form.Group>
+
+            <Button onClick={getMorphed}>
                 Generate
-            </Button>}
+            </Button>
         </Col>
     </>
 }
