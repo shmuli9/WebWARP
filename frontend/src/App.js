@@ -7,6 +7,7 @@ import LoadingScreen from "./Components/Loading";
 import 'simplebar/dist/simplebar.min.css';
 import SimpleBars from "simplebar-react";
 import Main from "./Components/Main/Main";
+import Status from "./Components/Status/Status";
 
 function App() {
     const containerStyles = {
@@ -30,6 +31,9 @@ function App() {
                             </Route>
                             <Route exact path={"/"}>
                                 <Main/>
+                            </Route>
+                            <Route exact path={"/api/status"}>
+                                <Status/>
                             </Route>
                         </Switch>
                     </Container>

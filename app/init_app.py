@@ -1,10 +1,11 @@
 import os
 
 import gdown
+from flask import current_app
 
 from app.WarpGAN.warpgan import WarpGAN
 from app.config import Config  # must use direct import because this file is imported before Flask context is created
-from flask import current_app
+
 
 def model_init_app(reset=False):
     model_path = current_app.config["MODEL_DIRECTORY"]
@@ -25,11 +26,13 @@ def model_init_app(reset=False):
         current_app.logger.debug("Downloading pretrained model")
         gdown.cached_download(url, output, quiet=False, postprocess=gdown.extractall)
         current_app.logger.debug("Download complete")
+
+        os.remove(output)  # remove downloaded zip after extraction
     else:
         current_app.logger.info("Pretrained model found - loading local file")
 
     if reset:
-        from app import network
+        pass
 
     network = WarpGAN()
     network.load_model(model_path)
@@ -42,5 +45,6 @@ def directories_init_app():
 
     for directory in directories:
         if not os.path.exists(directory):
+            current_app.logger.info(f"Creating missing directory - {directory}")
             os.mkdir(directory)
-
+    current_app.logger.info(f"Directories initialised")
