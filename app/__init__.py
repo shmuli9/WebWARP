@@ -8,7 +8,6 @@ from app.config import Config
 from app.init_app import model_init_app, directories_init_app
 
 network = None
-directories_init_app()
 
 
 def create_app(config_object=Config):
@@ -26,6 +25,7 @@ def create_app(config_object=Config):
     app.logger.info("WebWARP started")
 
     with app.app_context():
+        directories_init_app()
         global network
         network = model_init_app()
 
