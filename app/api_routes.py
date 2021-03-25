@@ -5,13 +5,12 @@ from flask import Blueprint, request, url_for, current_app, redirect
 from werkzeug.utils import secure_filename
 
 from app.utils import exec_command, allowed_file
-from app.init_app import model_init_app
 
 api = Blueprint("api_routes", __name__, url_prefix="/api")
 
 
-@api.route("/status/", methods=["GET", "POST"])
-@api.route("/status/<command>", methods=["GET", "POST"])
+@api.route("/status/", methods=["POST"])
+@api.route("/status/<command>", methods=["POST"])
 def system_status(command=None):
     """
     Return system status
@@ -29,12 +28,29 @@ def system_status(command=None):
     if command:
         return exec_command(command)
 
+    # log files
+    # nginx error/nginx access/flask log
+    flask_logs_dir = os.path.join(current_app.config["ROOT_FOLDER"], "../logs")
+    flask_logs = open(os.path.join(flask_logs_dir, "webwarp.log"), "r").readlines()
+
+    nginx_logs_dir = "/var/log"
+    nginx_access_logs, nginx_error_logs = [], []
+
+    if os.path.exists(nginx_logs_dir):
+        if os.path.exists(os.path.join(nginx_logs_dir, "webwarp_access.log")):
+            nginx_access_logs = open(os.path.join(nginx_logs_dir, "webwarp_access.log")).readlines()
+        if os.path.exists(os.path.join(nginx_logs_dir, "webwarp_error.log")):
+            nginx_error_logs = open(os.path.join(nginx_logs_dir, "webwarp_error.log")).readlines()
+
     data = {
         "configured_model_dir": model_dir,
         "parent_dir_exists": parent_dir_exists,
         "parent_dir_contents": parent_dir_contents,
         "model_dir_exists": model_dir_exists,
         "model_dir_contents": model_dir_contents,
+        "flask_logs": flask_logs,
+        "nginx_error_logs": nginx_error_logs,
+        "nginx_access_logs": nginx_access_logs
     }
 
     return data
