@@ -3,13 +3,12 @@ import {darcula} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const Logs = (props) => {
     let {name, lines} = props;
-    // let lines = props.lines;
     lines = lines.join("")
     return (
         <>
             <h4>{name}</h4>
             <div className={"overflow-auto mb-2"} style={{maxHeight: "350px", minHeight:"50px"}}>
-                <SyntaxHighlighter showLineNumbers={true} language="javascript" style={darcula}>
+                <SyntaxHighlighter wrapLongLines={true} showLineNumbers={true} language="javascript" style={darcula}>
                     {lines}
                 </SyntaxHighlighter>
             </div>

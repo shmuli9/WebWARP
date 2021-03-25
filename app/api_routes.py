@@ -31,16 +31,19 @@ def system_status(command=None):
     # log files
     # nginx error/nginx access/flask log
     flask_logs_dir = os.path.join(current_app.config["ROOT_FOLDER"], "../logs")
-    flask_logs = open(os.path.join(flask_logs_dir, "webwarp.log"), "r").readlines()
+    flask_logs = open(os.path.join(flask_logs_dir, "webwarp.log"), "r").readlines()[-100:]
+    flask_logs.reverse()
 
     nginx_logs_dir = "/var/log"
     nginx_access_logs, nginx_error_logs = [], []
 
     if os.path.exists(nginx_logs_dir):
         if os.path.exists(os.path.join(nginx_logs_dir, "webwarp_access.log")):
-            nginx_access_logs = open(os.path.join(nginx_logs_dir, "webwarp_access.log")).readlines()
+            nginx_access_logs = open(os.path.join(nginx_logs_dir, "webwarp_access.log")).readlines()[-100:]
+            nginx_access_logs.reverse()
         if os.path.exists(os.path.join(nginx_logs_dir, "webwarp_error.log")):
-            nginx_error_logs = open(os.path.join(nginx_logs_dir, "webwarp_error.log")).readlines()
+            nginx_error_logs = open(os.path.join(nginx_logs_dir, "webwarp_error.log")).readlines()[-100:]
+            nginx_error_logs.reverse()
 
     data = {
         "configured_model_dir": model_dir,
