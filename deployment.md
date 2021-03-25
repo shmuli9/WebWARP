@@ -40,7 +40,7 @@ Run from ~/
     git clone git@github.com:shmuli9/WebWARP.git  # (uses SSH key)
 
 ### Frontend
-    
+
     sudo npm install --global yarn
     cd frontend/
     yarn
@@ -74,7 +74,7 @@ Paste in:
 ### Setup nginx
 
 Create certificates
-    
+
     mkdir certs
     openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -keyout certs/key.pem -out certs/cert.pem
 
@@ -99,10 +99,19 @@ Paste in
         # location of the self-signed SSL certificate
         ssl_certificate /home/ubuntu/certs/cert.pem;
         ssl_certificate_key /home/ubuntu/certs/key.pem;
+        # use the following if setting up real SSL (replace domain name with eg webwarp.uk)
+        # ssl_certificate /etc/letsencrypt/live/{domain_name}/fullchain.pem;
+        # ssl_certificate_key /etc/letsencrypt/live/{domain_name}/privkey.pem;
+        
     
         # write access and error logs to /var/log
         access_log /var/log/webwarp_access.log;
         error_log /var/log/webwarp_error.log;
+
+        # location used for LetsEncrypt verification
+        location ~ /.well-known {
+                root /home/ubuntu/certs;
+        }
     
         location / {
             # forward application requests to the gunicorn server
@@ -121,13 +130,22 @@ Paste in
         #}
     }
 
-then run 
+then run
 
     sudo service nginx reload
 
+#### Set up SSL
+
+To use LetsEncrypt free certificates, we need to install certbot - instructions [here](https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx)
+
+After certbot is installed, run the following command (replace domain name with the real domain, eg webwarp.uk) :
+
+    sudo certbot certonly --webroot -w /home/ubuntu/certs -d {domain_name}
+
+After the domain is verified and certificates are generated alter `/etc/nginx/sites-enabled/webwarp` to comment out the self cert ssl files, and uncomment (and replace the domain name) the real SSL parameters
 
 ### Update from git
-    
+
 () means optional - depends on whether a new dependency needs to be installed/updated
 
 Yarn commands need to be run from `~/WebWARP/frontend`, and order is important as `yarn build` replaces the whole `build` directory, deleting some necessary folders, which are then replaced by the server
