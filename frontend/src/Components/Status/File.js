@@ -8,7 +8,7 @@ const Logs = (props) => {
         <>
             <h4>{name}</h4>
             <div className={"overflow-auto mb-2"} style={{maxHeight: "350px", minHeight:"50px"}}>
-                <SyntaxHighlighter wrapLongLines={true} showLineNumbers={true} language="javascript" style={darcula}>
+                <SyntaxHighlighter showLineNumbers={true} language="javascript" style={darcula}>
                     {lines}
                 </SyntaxHighlighter>
             </div>
