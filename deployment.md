@@ -153,6 +153,12 @@ Yarn commands need to be run from `~/WebWARP/frontend`, and order is important a
     git pull                            # download the new version
     (yarn)                              # download new js packages
     yarn build                          # build react frontend
-    (pip install -r requirements.txt)   # get new python packages
+    (pip3 install -r requirements.txt)   # get new python packages
     sudo supervisorctl stop webwarp     # stop the current server
     sudo supervisorctl start webwarp    # start a new server
+
+Or, in one line:
+
+     cd /home/ubuntu/WebWARP/ && git pull; sudo supervisorctl stop webwarp; cd frontend && yarn build; sudo supervisorctl start webwarp
+
+If new deps, remember to do yarn and pip install but with `venv` activated
