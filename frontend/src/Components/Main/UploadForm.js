@@ -19,14 +19,8 @@ const UploadForm = (props) => {
             console.log("Cropper not initialised")
         } else {
             if (aligned && imageLoaded) {
-                cropper.enable()
-                console.log("Enabled...")
-                cropper.crop()
                 setEnabled(true)
             } else {
-                cropper.clear()
-                cropper.disable()
-                console.log("Disabled...")
                 setEnabled(false)
             }
         }
@@ -101,6 +95,7 @@ const UploadForm = (props) => {
                                 setAligned(e.target.checked);
                                 cropper.reset();
                             }}
+                            disabled={!imageLoaded}
                             className={"mt-3"}
                             label="Customise image?"/>
 

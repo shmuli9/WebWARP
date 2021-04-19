@@ -7,12 +7,11 @@ const CropImage = (props) => {
 
     return (
         <div className={"row"}>
-            <div className={"col-12 mr-0"}>
+            <div className={`col-12 mr-0 ${enabled ? "" : "in"}visible`}>
                 <Cropper
                     style={{height: 512, width: "100%"}}
                     src={image}
                     autoCrop={true}
-                    enable={enabled}
                     aspectRatio={1}
                     viewMode={0}
                     minCropBoxHeight={256}
