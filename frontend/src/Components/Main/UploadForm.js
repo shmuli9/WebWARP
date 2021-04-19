@@ -62,7 +62,7 @@ const UploadForm = (props) => {
                 body: form
             })
                 .then(res => res.json())
-                .then(json => setGenerated(json.image[0]))
+                .then(json => setGenerated(json.image))
                 .catch(err => console.log(err));
         }
     };
