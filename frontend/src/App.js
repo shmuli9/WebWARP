@@ -12,14 +12,15 @@ import Status from "./Components/Status/Status";
 function App() {
     const containerStyles = {
         minWidth: "300px",
-        maxWidth: "1080px"
+        maxWidth: "1080px",
+        minHeight: "100%"
     }
 
     const About = lazy(() => import("./Components/About/About"));
 
     return (
         <Router>
-            <SimpleBars style={{maxHeight: "100vh",}}>
+            <SimpleBars style={{minHeight: "100%"}}>
 
                 <Header/>
 

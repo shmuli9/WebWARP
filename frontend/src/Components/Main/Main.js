@@ -40,7 +40,7 @@ function Main() {
             </Row>
 
             <Row className="mt-5">
-                <Col sm={6} className={"mb-auto"}>
+                <Col sm={6} className={"mb-5"}>
                     <ImageSelect setCropper={setCropper} image={image} aligned={aligned} enabled={enabled}/>
                 </Col>
                 <Col sm={6} className={"mb-auto"}>
