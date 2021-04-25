@@ -69,12 +69,15 @@ const UploadForm = (props) => {
         } else if (e.target) {
             files = e.target.files;
         }
-        const reader = new FileReader();
-        reader.onload = () => {
-            setImage(reader.result);
-        };
-        reader.readAsDataURL(files[0]);
-        setFilename(files[0].name)
+
+        if (files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(files[0]);
+            setFilename(files[0].name)
+        }
     };
 
     return <>
