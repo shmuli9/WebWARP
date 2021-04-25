@@ -84,7 +84,6 @@ const UploadForm = (props) => {
                     id="source-file"
                     label="Choose a picture"
                     accept="image/*"
-                    capture="user"
                     onChange={chooseFile}
                     custom
                 />
