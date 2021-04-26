@@ -57,7 +57,7 @@ Run from ~/
 Paste in:
 
     [program:webwarp]
-    command=/home/ubuntu/WebWARP/venv/bin/gunicorn -b localhost:8000 application:application
+    command=/home/ubuntu/WebWARP/venv/bin/gunicorn -b localhost:8000 -w 2 application:application
     directory=/home/ubuntu/WebWARP
     user=ubuntu
     autostart=true
