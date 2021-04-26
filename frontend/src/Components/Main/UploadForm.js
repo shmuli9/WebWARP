@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from "react";
-import Col from "react-bootstrap/Col";
-import {Form} from "react-bootstrap";
-import Button from "react-bootstrap/Button";
+import {Form, Spinner, Button, Col} from "react-bootstrap";
 import bsCustomFileInput from 'bs-custom-file-input';
 
 const UploadForm = (props) => {
     const {setFilename, filename, setGenerated, cropper, setImage, image, setAligned, aligned, setEnabled} = props;
     const [scale, setScale] = useState(1.0);
     const [numStyles, setNumStyles] = useState(1);
+    const [loading, setLoading] = useState(false);
     const imageLoaded = image && image.search("placeholder") === -1
 
     useEffect(() => {
@@ -27,6 +26,8 @@ const UploadForm = (props) => {
     }, [image, aligned, cropper, imageLoaded, setEnabled])
 
     const getMorphed = () => {
+        cropper.disable()
+
         const cropOptions = {
             width: 256,
             height: 256
@@ -56,8 +57,14 @@ const UploadForm = (props) => {
                 body: form
             })
                 .then(res => res.json())
-                .then(json => setGenerated(json.image))
-                .catch(err => console.log(err));
+                .then(json => {
+                    setLoading(false)
+                    setGenerated(json.image)
+                })
+                .catch(err => {
+                    setLoading(false)
+                    console.log(err)
+                });
         }
     };
 
@@ -79,6 +86,10 @@ const UploadForm = (props) => {
             setFilename(files[0].name)
         }
     };
+
+    useEffect(() => {
+        if (loading) getMorphed(); else if (cropper) cropper.enable()
+    }, [cropper, getMorphed, loading])
 
     return <>
         <Col className={"my-auto"} md={6}>
@@ -122,8 +133,18 @@ const UploadForm = (props) => {
                               max={10.00}/>
             </Form.Group>
 
-            <Button onClick={getMorphed}>
-                Generate
+            <Button onClick={() => setLoading(true)} disabled={loading}>
+                {loading ? <>
+                    Generating{" "}
+                    <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                    />
+                    <span className="sr-only">Generating...</span>
+                </> : "Generate"}
             </Button>
         </Col>
     </>
