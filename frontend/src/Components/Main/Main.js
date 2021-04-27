@@ -21,7 +21,7 @@ function Main() {
                 <Link to={"/"} className="h2 alert-heading">WebWARP</Link>
                 <hr/>
                 <p className={"mb-0"}>
-                    WebWARP
+                    Create a caricature using AI!
                 </p>
             </Alert>
 

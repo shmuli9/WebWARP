@@ -28,7 +28,7 @@ const CropImage = (props) => {
                             setCropper(instance);
                         }}
                     /> : <Figure className="mb-0">
-                        <Figure.Image className="mb-0" src={image} alt="image" style={{height: 512}} fluid/>
+                        <Figure.Image className="mb-0" src={image} alt="image" style={{height: 512, objectFit: "contain"}} fluid/>
                     </Figure>}
                 </Paper>
             </div>
