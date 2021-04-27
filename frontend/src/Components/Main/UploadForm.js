@@ -58,7 +58,14 @@ const UploadForm = (props) => {
                 method: "POST",
                 body: form
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok){
+                        return res.text().then(text => {
+                            throw Error(text)
+                        })
+                    }
+                    return res.json()
+                })
                 .then(json => {
                     setLoading(false)
                     setGenerated(json.image)
@@ -66,6 +73,7 @@ const UploadForm = (props) => {
                 .catch(err => {
                     setLoading(false)
                     console.log(err)
+                    alert(`An error occurred, please wait 30 seconds and try again\n${err.message}`)
                 });
         }
     };

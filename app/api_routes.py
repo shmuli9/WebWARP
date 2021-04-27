@@ -1,7 +1,7 @@
 import os
 import time
 
-from flask import Blueprint, request, url_for, current_app, redirect
+from flask import Blueprint, request, url_for, current_app, redirect, jsonify
 from werkzeug.utils import secure_filename
 
 from app.utils import exec_command, allowed_file
@@ -92,13 +92,20 @@ def upload_image():
             aligned = True if request.form.get("aligned", default="false", type=str) == "true" else False
 
             from app import warpgan
-            start = time.time()
-            images = warpgan.trigger_nn(upload_path, current_app.config["RESULTS_FOLDER"], num_styles, scale, aligned)
-            total = time.time() - start
+
+            try:
+                start = time.time()
+                images = warpgan.trigger_nn(upload_path, current_app.config["RESULTS_FOLDER"], num_styles, scale,
+                                            aligned)
+                total = time.time() - start
+
+            except Exception as e:
+                current_app.logger.error(e.with_traceback(e.__traceback__))
+                return jsonify({"error": e.args}), 415  # Unsupported Media Type
 
             image_urls = [url_for("static", filename=f"results/{image}") for image in images]
 
-            # os.remove(upload_path)
+            os.remove(upload_path)
 
             return {
                 "num_styles": num_styles,

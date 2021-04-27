@@ -24,6 +24,9 @@ def trigger_nn(input_path, output_path, num_styles=5, scale=1.0, aligned=False):
     if not aligned:
         img = detect_align(img)
 
+    if img is None:
+        raise Exception("Detect align failed", "img is none")
+
     img = (img - 127.5) / 128.0
 
     images = np.tile(img[None], [num_styles, 1, 1, 1])
