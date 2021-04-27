@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Form, Spinner, Button, Col} from "react-bootstrap";
 import bsCustomFileInput from 'bs-custom-file-input';
+import {Icon, Tooltip} from "@material-ui/core";
+import InfoIcon from '@material-ui/icons/Info';
 
 const UploadForm = (props) => {
     const {setFilename, filename, setGenerated, cropper, setImage, image, setAligned, aligned, setEnabled} = props;
@@ -101,22 +103,43 @@ const UploadForm = (props) => {
                     onChange={chooseFile}
                     custom
                 />
-                <Form.Check type="checkbox"
-                            id={"check-aligned"}
-                            checked={aligned}
-                            onChange={(e) => {
-                                setAligned(e.target.checked);
-                                cropper.reset();
-                            }}
-                            disabled={!imageLoaded}
-                            className={"mt-3"}
-                            label="Customise image?"/>
+                <Form.Check className={"mt-3"}>
+                    <Form.Check.Input
+                        disabled={!imageLoaded}
+                        id={"check-aligned"}
+                        checked={aligned}
+                        onChange={(e) => {
+                            setAligned(e.target.checked);
+                            cropper.reset();
+                        }}
+                        style={{position: "static"}}
+                        className={"mr-2"}/>
+
+                    <Form.Check.Label htmlFor={"check-aligned"}>
+                        Customise image
+                        <Tooltip title="Crop and zoom your image prior to generating the caricature">
+                            <Icon aria-label="customise image info">
+                                <InfoIcon/>
+                            </Icon>
+                        </Tooltip>
+                    </Form.Check.Label>
+                </Form.Check>
 
             </Form>
         </Col>
         <Col className={imageLoaded ? "visible" : "invisible"}>
             <Form.Group controlId="styles">
-                <Form.Label>Number of styles ({numStyles})</Form.Label>
+                <Form.Label>
+                    Number of styles
+                    <Tooltip title="Choose how many styles of caricature to generate">
+                        <Icon aria-label="number of styles info">
+                            <InfoIcon/>
+                        </Icon>
+                    </Tooltip>
+                    ({numStyles})
+                </Form.Label>
+
+
                 <Form.Control type="range"
                               value={numStyles}
                               onChange={(e) => setNumStyles(e.target.value)}
@@ -124,7 +147,15 @@ const UploadForm = (props) => {
                               max={5}/>
             </Form.Group>
             <Form.Group controlId="scale">
-                <Form.Label>Scale factor ({scale})</Form.Label>
+                <Form.Label>
+                    Scale factor
+                    <Tooltip title="Choose how exaggerated the caricature should be">
+                        <Icon aria-label="scale factor info">
+                            <InfoIcon/>
+                        </Icon>
+                    </Tooltip>
+                    ({scale})
+                </Form.Label>
                 <Form.Control type="range"
                               value={scale}
                               onChange={(e) => setScale(e.target.value)}
