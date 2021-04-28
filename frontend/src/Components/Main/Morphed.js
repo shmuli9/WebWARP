@@ -7,8 +7,9 @@ const Morphed = (props) => {
     let processed;
 
     if (generated) {
+        const url = process.env.REACT_APP_BACKEND_URL
         processed = generated.map(item => {
-            return {'original': `${item}`}
+            return {'original': `${url ? url : ""}${item}`}
         })
 
     }
