@@ -6,6 +6,7 @@ chardet==4.0.0
 click==7.1.2
 filelock==3.0.12
 Flask==1.1.2
+Flask-Cors==3.0.10
 gast==0.4.0
 gdown==3.12.2
 grpcio==1.20.0

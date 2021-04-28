@@ -5,9 +5,10 @@ from flask import Blueprint, request, url_for, current_app, redirect, jsonify
 from werkzeug.utils import secure_filename
 
 from app.utils import exec_command, allowed_file
+from flask_cors import CORS
 
 api = Blueprint("api_routes", __name__, url_prefix="/api")
-
+CORS(api)
 
 @api.route("/status/", methods=["POST"])
 @api.route("/status/<command>", methods=["POST"])
