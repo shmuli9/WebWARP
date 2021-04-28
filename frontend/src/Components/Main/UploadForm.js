@@ -54,7 +54,9 @@ const UploadForm = (props) => {
             form.append("num_styles", numStyles);
             form.append("aligned", aligned);
 
-            fetch(`${process.env.REACT_APP_BACKEND_URL ? process.env.REACT_APP_BACKEND_URL : ""}/api/upload`, {
+            const url = process.env.REACT_APP_BACKEND_URL
+
+            fetch(`${url ? url : ""}/api/upload`, {
                 method: "POST",
                 body: form
             })
