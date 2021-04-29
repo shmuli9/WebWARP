@@ -1,2 +1,5 @@
+# Force HTTPS
+http://webwarp.uk/* https://webwarp.uk/:splat 301!
+
 # redirect all urls to index.html (for SPA)
 /* /index.html 200
