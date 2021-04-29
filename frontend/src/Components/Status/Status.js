@@ -5,7 +5,9 @@ function Status() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch(`/api/status/`, {
+        const url = process.env.REACT_APP_BACKEND_URL
+
+        fetch(`${url ? url : ""}/api/status/`, {
             method: "POST",
         })
             .then(res => res.json())
@@ -24,7 +26,8 @@ function Status() {
                 </ul>
                 <p>Model directory: {data["configured_model_dir"]}</p>
                 <Logs name="Flask Logs" lines={data["flask_logs"] ? data["flask_logs"] : []}></Logs>
-                <Logs name="nginx Access Logs" lines={data["nginx_access_logs"] ? data["nginx_access_logs"] : []}></Logs>
+                <Logs name="nginx Access Logs"
+                      lines={data["nginx_access_logs"] ? data["nginx_access_logs"] : []}></Logs>
                 <Logs name="nginx Error Logs" lines={data["nginx_error_logs"] ? data["nginx_error_logs"] : []}></Logs>
             </div>
         </div>
