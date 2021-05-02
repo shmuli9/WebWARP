@@ -16,7 +16,8 @@ WebWARP provides an easy-to-use UI exposing features such as scale factor, style
 - [Testing](#testing)
 - [Deployment](#deployment)
     - [Setup backend instance](#setup-instance-ec2---t2medium)
-        - [SSH](#ssh)
+        - [Setup user account](#setup-users)
+        - [Password-less login](#enable-password-less-ssh-login)
         - [Firewall](#firewall)
     - [Install Application](#install-application)
         - [Install Dependencies](#dependencies)
@@ -68,7 +69,7 @@ For example, from the root directory run the following commands to generate 5 im
 
     python app/WarpGAN/test.py app/WarpGAN/pretrained/warpgan_pretrained app/WarpGAN/data/example/CaptainMarvel.jpg app/WarpGAN/result/CaptainMarvel --num_styles 5
 
-You can also change the warping extent by using the --scale argument. For example, the following command doubles the displacement of the warpping control points:
+You can also change the warping extent by using the --scale argument. For example, the following command doubles the displacement of the warping control points:
 
     python app/WarpGAN/test.py app/WarpGAN/pretrained/warpgan_pretrained app/WarpGAN/data/example/CaptainMarvel.jpg app/WarpGAN/result/CaptainMarvel --num_styles 5 --scale 2.0
 
@@ -85,15 +86,17 @@ All commands assumed to be run from `~/WebWARP` except `git clone` which is run 
 
 Create the instance on AWS EC2. I used the t2.medium but other size nodes may work too.
 
-#### SSH
-
 Login to the EC2 instance via SSH using the root account.
+
+#### Setup users
 
 Create user account for the rest of this guide
 
     adduser --gecos "" ubuntu
     usermod -aG sudo ubuntu
     su ubuntu
+
+#### Enable password-less SSH login
 
 Run the following commands on your local machine (using WSL Terminal if on Windows)
 
@@ -258,7 +261,7 @@ then run
 
 To use LetsEncrypt free certificates, we need to install certbot - instructions [here](https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx)
 
-After certbot is installed, run the following command (replace domain name with the real domain, eg api.webwarp.uk) :
+After certbot is installed, run the following command (replace domain name with the real domain, e.g. api.webwarp.uk) :
 
     sudo certbot certonly --webroot -w /home/ubuntu/certs -d {domain_name}
 
@@ -286,7 +289,7 @@ and put in the URL or IP address of your backend server (default is api.webwarp.
 
 ### Custom domains (DNS Config)
 
-To setup a custom domain, we need to setup our DNS to point api.webwarp.uk to the backend EC2 instance, and webwarp.uk to the Netlify endpoint.
+To set up a custom domain, we need to set up our DNS to point api.webwarp.uk to the backend EC2 instance, and webwarp.uk to the Netlify endpoint.
 
 First add a custom domain to Netlify and follow the instruction to update your DNS.
 
