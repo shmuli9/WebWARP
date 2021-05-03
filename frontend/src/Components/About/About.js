@@ -2,7 +2,7 @@ import {Figure, Card} from "react-bootstrap";
 
 function About() {
     const reference = (url, text) => {
-        return <a href={url} target={"_blank"}>{text}</a>
+        return <a href={url} target={url.startsWith("#") ? "" : "_blank"}>{text}</a>
     }
 
     return (
@@ -143,7 +143,7 @@ function About() {
 
                     <Card.Title id={"security-header"}>Security</Card.Title>
                     <Card.Text>
-                        <h6>4.5.1 HTTPS/SSL</h6>
+                        <h6>HTTPS/SSL</h6>
                         <p>There were several areas where security was addressed. First and foremost was the use of SSL
                             certificates in all areas of the site.</p>
                         <p>In general SSL ensures that data is secure when being transmitted across the internet. This
@@ -172,7 +172,7 @@ function About() {
                             deploys, it injects this variable into the fetch calls to ensure they are directed at the
                             correct server.</p>
 
-                        <h6>4.5.2 Cross-Origin Resource Sharing</h6>
+                        <h6>Cross-Origin Resource Sharing</h6>
                         <p>Cross-Origin Resource Sharing (CORS) is a security policy implemented by
                             modern web browsers that prevents websites making cross-domain HTTP requests unless the
                             destination server allows it. A simple example of this is that if you browse to google.com,
@@ -193,7 +193,7 @@ function About() {
                             easy to limit it to specific endpoints, so I decided to take advantage of this
                             functionality.</p>
 
-                        <h6>4.5.3 Firewall</h6>
+                        <h6>Firewall</h6>
                         <p>I setup a firewall on the backend server to limit connections to specified ports. This is
                             good practise to prevent a would-be attacker gleaning any useful information by scanning the
                             server’s open ports.</p>
