@@ -11,6 +11,8 @@ function About() {
             <Card className={"text-justify"}>
                 <Card.Header><h3>Architecture</h3></Card.Header>
                 <Card.Body>
+                    <Card.Img src={"/architecture.svg"}/>
+                    <Card.Footer className={"mb-5"}>Overall system architecture of WebWARP application</Card.Footer>
 
                     <Card.Title>Backend</Card.Title>
                     <Card.Text>
@@ -222,14 +224,7 @@ function About() {
                             a web browser. This is a step change in how the WarpGAN model could previously be used.
 
                         </p>
-
-                        <Figure>
-                            <Figure.Image src={"/architecture.png"}/>
-                            <Figure.Caption>Overall system architecture of WebWARP application</Figure.Caption>
-                        </Figure>
-
                     </Card.Text>
-
                 </Card.Body>
 
             </Card>
