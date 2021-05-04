@@ -73,11 +73,20 @@ You can also change the warping extent by using the --scale argument. For exampl
 
     python app/WarpGAN/test.py app/WarpGAN/pretrained/warpgan_pretrained app/WarpGAN/data/example/CaptainMarvel.jpg app/WarpGAN/result/CaptainMarvel --num_styles 5 --scale 2.0
 
+More formal tests can be found in the [tests](/tests) directory. These tests aim to more rigorously test the backend in 
+regard to how fast caricature images can be generated.
+
+Some interesting results of these tests indicate that cropping on the client side is very beneficial to server performance 
+and that changing the scale factor does not seem to affect performance at all. As expected the tests also confirm that 
+the server has no preference over PNG or JPG images, at least not to the degree that is obvious.
+
+![Image Format Comparison](/tests/results/images/Image%20Formats%20comparison%20-%20PNG%20vs%20JPG.png)
+
 ## Deployment
 
 This aims to show how I deployed this application, including all the pertinent commands and configuration.
 
-Large parts of this doc were inspired by this [article](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xvii-deployment-on-linux) 
+Large parts of this deployment doc were inspired by this [article](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xvii-deployment-on-linux) 
 from Miguel Grinberg
 
 All commands assumed to be run from `~/WebWARP` except `git clone` which is run from `~/`
