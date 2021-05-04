@@ -88,6 +88,16 @@ function About() {
                             a {reference("/status", "dashboard")} to
                             easily display the most recent logs and issues for the site.
                         </p>
+
+                        <Figure>
+                            <Figure.Image src={"/benefits-of-cropping-on-frontend.png"}/>
+                            <Figure.Caption className={"text-center"}>This image shows a drastic increase in performance when the user crops the
+                                image
+                                instead of the server. The mean time for processing an aligned image is 4.8 seconds
+                                (standard deviation: 0.26) vs 20.4 seconds (standard deviation: 0.20) if the original
+                                image is used.</Figure.Caption>
+                        </Figure>
+
                     </Card.Text>
 
                     <Card.Title id={"deployment-header"}>Deployment</Card.Title>
@@ -138,8 +148,14 @@ function About() {
                             used an A record to point it to the EC2 instance.</p>
                         <p>Additionally, I fixed the IP address of my EC2 instance using an Elastic IP Address. This is
                             necessary so that the DNS can be set to point to a fixed destination.
-
                         </p>
+
+                        <Figure>
+                            <Figure.Image src={"/scale-factor-comparison.png"}/>
+                            <Figure.Caption className={"text-center"}>This graphic shows very little difference in the performance of the server when changing
+                                the scale factor. For each setting tested (0.5, 1.0, 3.0, 6.5 and 9.0) the mean is 4.8s
+                                (standard deviation: between 0.13-0.16).</Figure.Caption>
+                        </Figure>
 
                     </Card.Text>
 
